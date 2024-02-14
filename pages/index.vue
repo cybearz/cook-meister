@@ -47,6 +47,7 @@ async function getReceipt(dish_name) {
 	<UContainer>
 		<div class="mt-8">
 			<div v-if="step === 1" class="space-y-4">
+				<h1>Что хотите приготовить?</h1>
 				<UFormGroup label="Ингредиенты" name="ingredients">
 					<UInput v-model="state.ingredients" />
 				</UFormGroup>
