@@ -5,36 +5,73 @@ interface Props {
 const emit = defineEmits(["update:modelValue"])
 const props = defineProps<Props>()
 
+const supabase = useSupabaseClient()
+
+const logout = async () => {
+	await supabase.auth.signOut()
+	navigateTo("/login")
+}
+
 const links = [
-	{
-		label: "Главная",
-		icon: "i-heroicons-home",
-		to: "/",
-	},
-	{
-		label: "Избранное",
-		icon: "i-heroicons-star",
-		to: "/favorite",
-	},
-	{
-		label: "Настройки",
-		icon: "i-heroicons-cog-6-tooth",
-		to: "/settings",
-	},
+	[
+		{
+			label: "Главная",
+			icon: "i-mdi-home",
+			to: "/",
+		},
+		{
+			label: "Настройки",
+			icon: "i-mdi-cog",
+			to: "/settings",
+		},
+	],
+	[
+		{
+			label: "Выйти",
+			icon: "i-mdi-logout",
+			click: logout,
+		},
+	],
 ]
 </script>
 
 <template>
-	<div v-show="modelValue">
-		<div
-			class="fixed inset-0 z-30 bg-gray-900/50"
-			@click="emit('update:modelValue', false)"
-		/>
-		<aside
-			class="fixed top-0 left-0 z-40 w-64 h-screen pt-16 bg-white border-r"
+	<div>
+		<transition
+			enter-from-class="opacity-0"
+			leave-to-class="opacity-0"
+			enter-active-class="transition duration-300"
+			leave-active-class="transition duration-300"
 		>
-			<UVerticalNavigation :links="links" />
-		</aside>
+			<div
+				v-show="modelValue"
+				class="fixed inset-0 z-30 bg-gray-900/50"
+				@click="emit('update:modelValue', false)"
+			/>
+		</transition>
+		<transition
+			enter-from-class="-translate-x-full"
+			leave-to-class="-translate-x-full"
+			enter-active-class="transition duration-300"
+			leave-active-class="transition duration-300"
+		>
+			<aside
+				v-show="modelValue"
+				class="fixed top-0 left-0 z-40 w-64 h-screen pt-16 pb-2 bg-white border-r"
+			>
+				<UVerticalNavigation
+					:links="links"
+					:ui="{
+						wrapper: 'h-full flex flex-col justify-between',
+						divider: {
+							wrapper: {
+								base: 'hidden',
+							},
+						},
+					}"
+				/>
+			</aside>
+		</transition>
 	</div>
 </template>
 
