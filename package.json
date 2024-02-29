@@ -1,24 +1,24 @@
 {
-  "name": "nuxt-app",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
-  },
-  "dependencies": {
-    "@iconify-json/mdi": "^1.1.64",
-    "@nuxt/ui": "^2.13.0",
-    "nuxt": "^3.10.1",
-    "openai": "^4.28.0",
-    "vue": "^3.4.15",
-    "vue-router": "^4.2.5",
-    "zod": "^3.22.4"
-  },
-  "devDependencies": {
-    "@nuxtjs/supabase": "^1.1.6"
-  }
+	"name": "cook-meister",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "nuxt build",
+		"dev": "nuxt dev",
+		"generate": "nuxt generate",
+		"preview": "nuxt preview",
+		"postinstall": "nuxt prepare"
+	},
+	"dependencies": {
+		"@iconify-json/mdi": "^1.1.64",
+		"@nuxt/ui": "^2.13.0",
+		"nuxt": "^3.10.1",
+		"openai": "^4.28.0",
+		"vue": "^3.4.15",
+		"vue-router": "^4.2.5",
+		"zod": "^3.22.4"
+	},
+	"devDependencies": {
+		"@nuxtjs/supabase": "^1.1.6"
+	}
 }
