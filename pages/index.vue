@@ -1,92 +1,204 @@
 <script lang="ts" setup>
-import type { FormError } from "#ui/types"
-const step = ref(1)
-const state = reactive({
-	ingredients: "",
-	time: "",
-	dishName: "",
+import type DishConfig from "@/types/DishConfig"
+import type DishParams from "@/types/DishParams"
+import type RecipeConfig from "@/types/RecipeConfig"
+import type Dish from "@/types/Dish"
+import type Recipe from "@/types/Recipe"
+
+const userRequest = ref<string>("")
+const dishList = reactive({
+	items: [] as Dish[],
+	loading: false,
 })
 
-const loading = ref(false)
+const isOpen = ref(false)
+const dishParams = ref<DishParams>({
+	mealType: null,
+	dishType: null,
+	cuisineType: "",
+	diet: null,
+	cookingTime: null,
+})
 
-const dishIdeas = ref(null)
+//Todo lodash
+const appliedParamsNum = computed(() => {
+	let count = 0
 
-async function getDishIdeas() {
-	loading.value = true
-	dishIdeas.value = await $fetch("http://localhost:3001/get_dish_ideas", {
-		method: "POST",
-		body: {
-			ingredients: state.ingredients,
-			time: state.time,
-		},
-	})
-	loading.value = false
-	step.value += 1
+	for (let key in dishParams.value) {
+		if (
+			dishParams.value.hasOwnProperty(key) &&
+			dishParams.value[key] !== null &&
+			dishParams.value[key] !== ""
+		) {
+			count++
+		}
+	}
+
+	return count
+})
+
+const applyDishParams = (data: any) => {
+	isOpen.value = false
+	dishParams.value = data
 }
 
-const receipt = ref(null)
+const generateDishes = async () => {
+	dishList.loading = true
+	try {
+		dishList.items = await $fetch("/api/generate-dishes", {
+			method: "POST",
+			body: {
+				dishConfig: {
+					dishParams: dishParams.value,
+					userRequest: userRequest.value,
+				} as DishConfig,
+			},
+		})
+	} finally {
+		dishList.loading = false
+	}
+}
 
-async function getReceipt(dish_name) {
-	loading.value = true
-	state.dishName = dish_name
-	receipt.value = await $fetch("http://localhost:3001/get_dish_receipt", {
-		method: "POST",
-		body: {
-			dish_name: state.dishName,
-			ingredients: state.ingredients,
-			time: state.time,
-		},
-	})
-	loading.value = false
-	step.value += 1
+const recipeModal = reactive({
+	isOpen: false,
+	loading: false,
+	item: null as null | Recipe,
+})
+
+const generateRecipeForDish = async (dish: Dish) => {
+	recipeModal.isOpen = true
+	recipeModal.loading = true
+
+	const { name, description, cookingTime, difficulty, kilocalories } = dish
+	try {
+		const resp = await $fetch("/api/generate-recipe", {
+			method: "POST",
+			body: {
+				recipeConfig: { name, description, cookingTime } as RecipeConfig,
+			},
+		})
+
+		recipeModal.item = {
+			name,
+			description,
+			difficulty,
+			kilocalories,
+			cookingTime,
+			...resp,
+		}
+	} finally {
+		recipeModal.loading = false
+	}
 }
 </script>
 
 <template>
-	<UProgress v-if="loading" animation="carousel" />
-	<UContainer>
-		<div class="mt-8">
-			<div v-if="step === 1" class="space-y-4">
-				<h1>Что хотите приготовить?</h1>
-				<UFormGroup label="Ингредиенты" name="ingredients">
-					<UInput v-model="state.ingredients" />
-				</UFormGroup>
-				<UFormGroup label="Время" name="time">
-					<UInput v-model="state.time" />
-				</UFormGroup>
+	<div class="flex flex-col h-full">
+		<UFormGroup label="Генератор рецептов" hint="Как пользоваться?">
+			<UInput
+				v-model="userRequest"
+				placeholder="Что хотите приготовить?"
+				autofocus
+				size="lg"
+				:ui="{
+					icon: { trailing: { pointer: '' }, leading: { pointer: '' } },
+				}"
+				class="w-full"
+				@keyup.enter="generateDishes()"
+			>
+				<template #leading>
+					<UChip
+						:text="appliedParamsNum"
+						size="xl"
+						:show="appliedParamsNum > 0"
+					>
+						<UButton
+							variant="link"
+							icon="i-heroicons-adjustments-horizontal"
+							:padded="false"
+							@click="isOpen = true"
+						/>
+					</UChip>
+				</template>
 
-				<UButton block @click="getDishIdeas">Далее</UButton>
-			</div>
-			<div v-if="step === 2">
-				<h1>Возможные блюда:</h1>
-				<UCard
-					v-for="dish in dishIdeas"
-					:key="dish.name"
-					class="mt-4 mb-2 cursor-pointer"
-					@click="getReceipt(dish.name)"
-				>
-					<template #header>
-						<strong>{{ dish.name }}</strong>
-					</template>
-					{{ dish.description }}
-				</UCard>
-			</div>
-			<div v-if="step === 3">
-				<h1>{{ state.dishName }}</h1>
-				<h3>Рецепт:</h3>
-				<UCard
-					v-for="step in receipt"
-					:key="step.step_num"
-					class="mb-2 mt-4"
-					@click="getReceipt(dish.name)"
-				>
-					<template #header>
-						<strong>Шаг {{ step.step_num }}</strong>
-					</template>
-					{{ step.description }}
-				</UCard>
-				<UButton class="mt-4" block @click="step = 1">Заново</UButton>
-			</div>
+				<template #trailing>
+					<UButton
+						variant="link"
+						icon="i-mdi-search"
+						:padded="false"
+						:disabled="!userRequest"
+						:loading="dishList.loading"
+						@click="generateDishes"
+					/>
+				</template>
+			</UInput>
+		</UFormGroup>
+		<AppLoading v-if="dishList.loading" />
+		<div v-else-if="dishList.items" class="space-y-2 mt-4">
+			<DishCard
+				v-for="(dish, idx) in dishList.items"
+				:dish="dish"
+				:key="idx"
+				@click="generateRecipeForDish(dish)"
+			/>
 		</div>
-	</UContainer>
+
+		<UModal v-model="recipeModal.isOpen" fullscreen>
+			<UCard
+				:ui="{
+					base: 'h-full flex flex-col',
+					rounded: '',
+					divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+					body: {
+						base: 'grow overflow-y-auto',
+					},
+				}"
+			>
+				<template #header>
+					<div class="flex items-center justify-between">
+						<h3 class="font-semibold text-gray-900">Рецепт</h3>
+						<UButton
+							color="gray"
+							variant="ghost"
+							icon="i-mdi-close"
+							class="-my-1"
+							@click="recipeModal.isOpen = false"
+						/>
+					</div>
+				</template>
+
+				<AppLoading v-if="recipeModal.loading" />
+				<DishRecipe v-else-if="recipeModal.item" :recipe="recipeModal.item" />
+			</UCard>
+		</UModal>
+
+		<UModal v-model="isOpen" fullscreen>
+			<UCard
+				:ui="{
+					base: 'h-full flex flex-col',
+					rounded: '',
+					divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+					body: {
+						base: 'grow',
+					},
+				}"
+			>
+				<template #header>
+					<div class="flex items-center justify-between">
+						<h3 class="font-semibold text-gray-900">Конфигуратор</h3>
+						<UButton
+							color="gray"
+							variant="ghost"
+							icon="i-heroicons-x-mark-20-solid"
+							class="-my-1"
+							@click="isOpen = false"
+						/>
+					</div>
+				</template>
+
+				<FormDishParams @submit="applyDishParams" />
+			</UCard>
+		</UModal>
+	</div>
 </template>
+~/types/DishConfig ~/types/Dish ~/types/Recipe
