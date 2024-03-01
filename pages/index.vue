@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+import type Dish from "@/types/Dish"
 import type DishConfig from "@/types/DishConfig"
 import type DishParams from "@/types/DishParams"
-import type RecipeConfig from "@/types/RecipeConfig"
-import type Dish from "@/types/Dish"
 import type Recipe from "@/types/Recipe"
+import type RecipeConfig from "@/types/RecipeConfig"
 
 const userRequest = ref<string>("")
 const dishList = reactive({
@@ -36,6 +36,10 @@ const appliedParamsNum = computed(() => {
 
 	return count
 })
+
+const canSearch = computed(
+	() => appliedParamsNum.value > 0 || userRequest.value.length > 3
+)
 
 const applyDishParams = (data: any) => {
 	isOpen.value = false
@@ -90,11 +94,28 @@ const generateRecipeForDish = async (dish: Dish) => {
 		recipeModal.loading = false
 	}
 }
+
+const promptIdeas = [
+	"Рецепты с яйцами",
+	"Вегетарианские обеды",
+	"Гриль",
+	"Праздничные блюда",
+	"Легкие салаты",
+	"Десерты без сахара",
+	"Фаст-фуд",
+	"Что взять с собой на природу",
+	"Ланчи в офис",
+	"Зимние супы и горячие напитки",
+	"Морепродукты",
+	"Здоровое питание",
+	"Бюджетные блюда",
+	"Детское меню",
+]
 </script>
 
 <template>
 	<div class="flex flex-col h-full">
-		<UFormGroup label="Генератор рецептов" hint="Как пользоваться?">
+		<UFormGroup label="Генератор рецептов">
 			<UInput
 				v-model="userRequest"
 				placeholder="Что хотите приготовить?"
@@ -104,7 +125,7 @@ const generateRecipeForDish = async (dish: Dish) => {
 					icon: { trailing: { pointer: '' }, leading: { pointer: '' } },
 				}"
 				class="w-full"
-				@keyup.enter="generateDishes()"
+				@keyup.enter="canSearch && generateDishes()"
 			>
 				<template #leading>
 					<UChip
@@ -126,7 +147,7 @@ const generateRecipeForDish = async (dish: Dish) => {
 						variant="link"
 						icon="i-mdi-search"
 						:padded="false"
-						:disabled="!userRequest"
+						:disabled="!canSearch"
 						:loading="dishList.loading"
 						@click="generateDishes"
 					/>
@@ -134,14 +155,35 @@ const generateRecipeForDish = async (dish: Dish) => {
 			</UInput>
 		</UFormGroup>
 		<AppLoading v-if="dishList.loading" />
-		<div v-else-if="dishList.items" class="space-y-2 mt-4">
-			<DishCard
-				v-for="(dish, idx) in dishList.items"
-				:dish="dish"
-				:key="idx"
-				@click="generateRecipeForDish(dish)"
-			/>
-		</div>
+		<template v-else>
+			<div
+				v-if="dishList.items.length > 0"
+				class="flex-1 space-y-2 mt-4 overflow-y-auto"
+			>
+				<DishCard
+					v-for="(dish, idx) in dishList.items"
+					:dish="dish"
+					:key="idx"
+					@click="generateRecipeForDish(dish)"
+				/>
+			</div>
+
+			<template v-else>
+				<h3 class="text-sm text-gray-500 font-medium mt-4 mb-2">
+					Примеры запросов:
+				</h3>
+				<div class="flex flex-wrap gap-1">
+					<UButton
+						v-for="(prompt, idx) in promptIdeas"
+						variant="outline"
+						size="xs"
+						:key="idx"
+						:label="prompt"
+						@click="userRequest = prompt"
+					/>
+				</div>
+			</template>
+		</template>
 
 		<UModal v-model="recipeModal.isOpen" fullscreen>
 			<UCard
@@ -201,4 +243,3 @@ const generateRecipeForDish = async (dish: Dish) => {
 		</UModal>
 	</div>
 </template>
-~/types/DishConfig ~/types/Dish ~/types/Recipe

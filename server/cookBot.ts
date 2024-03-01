@@ -3,22 +3,12 @@ import type DishConfig from "@/types/DishConfig"
 import type RecipeConfig from "@/types/RecipeConfig"
 import OpenAI from "openai"
 import {
+	ASSISTANT_INSTRUCTION,
 	GENERATE_DISHES_INSTRUCTION,
 	GENERATE_RECIPE_INSTRUCTION,
 	createGenerateDishesPrompt,
 	createGenerateRecipePrompt,
 } from "./utils/prompts"
-
-const SYSTEM_MESSAGE: OpenAI.Chat.ChatCompletionSystemMessageParam = {
-	role: "system",
-	content: `You are a helpful cooking bot that assists in finding the best recipes for dishes that can be prepared at home, based on user queries. The suggested recipes should be delicious and preferably well-known.
-	If you understand what dish the user want, then answer with a recipe.
-	If the user can't decide what he wants then offer him your help:
-	- Provide your suggestions.
-	- If the user doesn't like anything, then suggest to describe the desired dish or use the configurator.
-	Answer only questions related to recipes.
-	Provide an answer in russian`,
-}
 
 class CookBot {
 	openai: OpenAI
@@ -81,7 +71,7 @@ class CookBot {
 	async chat(messages: OpenAI.Chat.ChatCompletionMessageParam[]) {
 		const completion = await this.openai.chat.completions.create({
 			model: "gpt-3.5-turbo",
-			messages: [SYSTEM_MESSAGE, ...messages],
+			messages: [ASSISTANT_INSTRUCTION, ...messages],
 		})
 		return completion.choices[0].message
 	}

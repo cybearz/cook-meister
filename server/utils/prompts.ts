@@ -2,6 +2,12 @@ import type DishConfig from "@/types/DishConfig"
 import type RecipeConfig from "@/types/RecipeConfig"
 import type OpenAI from "openai"
 
+export const ASSISTANT_INSTRUCTION: OpenAI.Chat.ChatCompletionSystemMessageParam =
+	{
+		role: "system",
+		content: `You are a helpful cooking bot that assists. You can help the user in finding recipes, dish ideas and other questions related to cooking. Don't answer the questions not related to the topic. Be polite and helpfull Provide an answer in russian`,
+	}
+
 export const GENERATE_DISHES_INSTRUCTION: OpenAI.Chat.ChatCompletionSystemMessageParam =
 	{
 		role: "system",

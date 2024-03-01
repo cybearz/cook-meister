@@ -15,9 +15,14 @@ const logout = async () => {
 const links = [
 	[
 		{
-			label: "Главная",
-			icon: "i-mdi-home",
+			label: "Рецепты",
+			icon: "i-mdi-book-open",
 			to: "/",
+		},
+		{
+			label: "Ассистент",
+			icon: "i-mdi-chef-hat",
+			to: "/assistant",
 		},
 		{
 			label: "Настройки",
