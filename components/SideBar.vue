@@ -15,20 +15,25 @@ const logout = async () => {
 const links = [
 	[
 		{
+			label: "Идеи",
+			icon: "i-mdi-head-lightbulb",
+			to: "/",
+		},
+		{
 			label: "Рецепты",
 			icon: "i-mdi-book-open",
-			to: "/",
+			to: "/recipes",
 		},
 		{
 			label: "Ассистент",
 			icon: "i-mdi-chef-hat",
 			to: "/assistant",
 		},
-		{
-			label: "Настройки",
-			icon: "i-mdi-cog",
-			to: "/settings",
-		},
+		// {
+		// 	label: "Настройки",
+		// 	icon: "i-mdi-cog",
+		// 	to: "/settings",
+		// },
 	],
 	[
 		{

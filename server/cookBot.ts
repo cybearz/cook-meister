@@ -46,7 +46,7 @@ class CookBot {
 		console.log("Generated prompt: ", createGenerateRecipePrompt(recipeConfig))
 		const completion = await this.openai.chat.completions.create({
 			model: "gpt-3.5-turbo",
-			temperature: 0.5,
+			temperature: 0,
 			max_tokens: 1024,
 			response_format: {
 				type: "json_object",
@@ -74,6 +74,19 @@ class CookBot {
 			messages: [ASSISTANT_INSTRUCTION, ...messages],
 		})
 		return completion.choices[0].message
+	}
+
+	async generateImage(recipeConfig: RecipeConfig) {
+		try {
+			const response = await this.openai.images.generate({
+				prompt: `${recipeConfig.name}. Description: ${recipeConfig.description}`,
+				n: 1,
+				size: "512x512",
+			})
+			return response
+		} catch (e) {
+			return null
+		}
 	}
 }
 

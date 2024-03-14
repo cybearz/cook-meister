@@ -29,8 +29,10 @@ const sideBarOpen = ref(false)
 			</div>
 		</nav>
 		<SideBar v-model="sideBarOpen" />
-		<main class="pt-16 h-full p-4">
-			<slot />
+		<main class="pt-14 h-full">
+			<UContainer class="py-4 h-full">
+				<slot />
+			</UContainer>
 		</main>
 	</div>
 </template>

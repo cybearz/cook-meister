@@ -34,10 +34,14 @@ export function createGenerateDishesPrompt(
 export const GENERATE_RECIPE_INSTRUCTION: OpenAI.Chat.ChatCompletionSystemMessageParam =
 	{
 		role: "system",
-		content: `The user will provide you the following recipe configuration: name, description and approximate cooking time in minutes. Try to find a recipe for it. Provide a dish recipe that will satisfy the conditions as a response. The recipe must include the requiered ingredients and the cooking steps with the instructions.
+		content: `The user will provide you the following dish configuration: name and description. Try to find a recipe for it.  The recipe must include the requiered ingredients and the cooking steps with the instructions. 
+		The cookingTime  must be strictly in minutes.
+The difficulty must be strictly one of these: "Легко", "Средне", "Сложно". 
+The  measureUnit must be strictly one of these:  "г" - gram, "кг" - kilogram,  "шт" - piece, "мл" - milliliter, "л" - liter. 
+The steps must not contain the step number.
 Provide your response as a JSON object with the following schema:
 
-{ ingredients: ["...", "..." ...], steps: [{ num: "...", instruction: "..." }, { num: "...", instruction: "..." } ...] }
+{cookingTime: 1, difficulty: "...", kilocalories: 1, ingredients: [ { name: "...", amount: 1, measureUnit: "г" }, { name: "...", amount: 1, measureUnit: "г" }, ... ], steps: ["...", "...", ...] }
 
 Your response must be in russian.`,
 	}
@@ -45,10 +49,10 @@ Your response must be in russian.`,
 export function createGenerateRecipePrompt(
 	recipeConfig: RecipeConfig
 ): OpenAI.Chat.ChatCompletionUserMessageParam {
-	const { name, description, cookingTime } = recipeConfig
+	const { name, description } = recipeConfig
 
 	return {
 		role: "user",
-		content: `Name: ${name}. Description: ${description}. Cooking time ${cookingTime}`,
+		content: `Name: ${name}. Description: ${description}.`,
 	}
 }

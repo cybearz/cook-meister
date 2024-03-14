@@ -1,13 +1,7 @@
 import type Dish from "@/types/Dish"
-
-interface Step {
-	num: number
-	instruction: string
-}
-
-type Difficulty = "Легко" | "Средне" | "Сложно"
+import type { Ingredient } from "./Ingredient"
 
 export default interface Recipe extends Dish {
-	ingredients: string[]
-	steps: Step[]
+	ingredients: Ingredient[]
+	steps: string[]
 }

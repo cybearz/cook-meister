@@ -210,7 +210,7 @@ const promptIdeas = [
 				</template>
 
 				<AppLoading v-if="recipeModal.loading" />
-				<DishRecipe v-else-if="recipeModal.item" :recipe="recipeModal.item" />
+				<CardRecipe v-else-if="recipeModal.item" v-bind="recipeModal.item" />
 			</UCard>
 		</UModal>
 

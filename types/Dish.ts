@@ -1,7 +1,10 @@
+type Difficulty = "Легко" | "Средне" | "Сложно"
+
 export default interface Dish {
+	photoUrl: string
 	name: string
-	description: string
-	difficulty: string
-	kilocalories: number
-	cookingTime: number
+	description: null | string
+	difficulty: null | Difficulty
+	kilocalories: null | number
+	cookingTime: null | number
 }
