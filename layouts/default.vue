@@ -26,11 +26,11 @@ const links = [
 			icon: "i-mdi-chef-hat",
 			to: "/assistant",
 		},
-		// {
-		// 	label: "Настройки",
-		// 	icon: "i-mdi-cog",
-		// 	to: "/settings",
-		// },
+		{
+			label: "Настройки",
+			icon: "i-mdi-cog",
+			to: "/settings",
+		},
 	],
 ]
 </script>
