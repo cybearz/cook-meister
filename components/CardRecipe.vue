@@ -14,7 +14,7 @@ const props = defineProps<Recipe>()
 		/>
 		<h3 class="text-lg font-semibold mt-2">{{ name }}</h3>
 
-		<div class="flex gap-4 mt-2">
+		<div class="flex gap-2 mt-2">
 			<UBadge variant="solid" size="sm">
 				<UIcon name="i-mdi-clock-outline" class="mr-1" />
 				{{ cookingTime }} мин
@@ -29,8 +29,8 @@ const props = defineProps<Recipe>()
 			</UBadge>
 		</div>
 		<p class="mt-2">{{ description }}</p>
-		<h3 class="mt-4 font-semibold">Ингредиенты:</h3>
-		<div>
+		<div class="space-y-2 mt-4">
+			<h3 class="font-semibold">Ингредиенты:</h3>
 			<div
 				v-for="(ingredient, idx) in ingredients"
 				:key="idx"
@@ -41,8 +41,9 @@ const props = defineProps<Recipe>()
 				<div>{{ ingredient.amount }} {{ ingredient.measureUnit }}</div>
 			</div>
 		</div>
-		<h3 class="mt-4 font-semibold">Приготовление:</h3>
-		<div class="space-y-2">
+
+		<div class="space-y-2 mt-4">
+			<h3 class="font-semibold">Приготовление:</h3>
 			<p v-for="(step, idx) in steps" :key="idx">
 				<span class="font-semibold">Шаг {{ idx + 1 }}.</span>
 				{{ step }}

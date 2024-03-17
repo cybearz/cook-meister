@@ -114,8 +114,14 @@ const promptIdeas = [
 </script>
 
 <template>
-	<div class="flex flex-col h-full">
-		<UFormGroup label="Генератор рецептов">
+	<div>
+		<AppBar title="Идеи">
+			<template #action>
+				<UButton icon="i-mdi-help-circle-outline" variant="ghost" />
+			</template>
+		</AppBar>
+
+		<UContainer class="py-2 flex flex-col h-full">
 			<UInput
 				v-model="userRequest"
 				placeholder="Что хотите приготовить?"
@@ -153,93 +159,93 @@ const promptIdeas = [
 					/>
 				</template>
 			</UInput>
-		</UFormGroup>
-		<AppLoading v-if="dishList.loading" />
-		<template v-else>
-			<div
-				v-if="dishList.items.length > 0"
-				class="flex-1 space-y-2 mt-4 overflow-y-auto"
-			>
-				<DishCard
-					v-for="(dish, idx) in dishList.items"
-					:dish="dish"
-					:key="idx"
-					@click="generateRecipeForDish(dish)"
-				/>
-			</div>
-
+			<AppLoading v-if="dishList.loading" />
 			<template v-else>
-				<h3 class="text-sm text-gray-500 font-medium mt-4 mb-2">
-					Примеры запросов:
-				</h3>
-				<div class="flex flex-wrap gap-1">
-					<UButton
-						v-for="(prompt, idx) in promptIdeas"
-						variant="outline"
-						size="xs"
+				<div
+					v-if="dishList.items.length > 0"
+					class="flex-1 space-y-2 mt-4 overflow-y-auto"
+				>
+					<DishCard
+						v-for="(dish, idx) in dishList.items"
+						:dish="dish"
 						:key="idx"
-						:label="prompt"
-						@click="userRequest = prompt"
+						@click="generateRecipeForDish(dish)"
 					/>
 				</div>
+
+				<template v-else>
+					<h3 class="text-sm text-gray-500 font-medium mt-4 mb-2">
+						Примеры запросов:
+					</h3>
+					<div class="flex flex-wrap gap-1">
+						<UButton
+							v-for="(prompt, idx) in promptIdeas"
+							variant="outline"
+							size="xs"
+							:key="idx"
+							:label="prompt"
+							@click="userRequest = prompt"
+						/>
+					</div>
+				</template>
 			</template>
-		</template>
 
-		<UModal v-model="recipeModal.isOpen" fullscreen>
-			<UCard
-				:ui="{
-					base: 'h-full flex flex-col',
-					rounded: '',
-					divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-					body: {
-						base: 'grow overflow-y-auto',
-					},
-				}"
-			>
-				<template #header>
-					<div class="flex items-center justify-between">
-						<h3 class="font-semibold text-gray-900">Рецепт</h3>
-						<UButton
-							color="gray"
-							variant="ghost"
-							icon="i-mdi-close"
-							class="-my-1"
-							@click="recipeModal.isOpen = false"
-						/>
-					</div>
-				</template>
+			<UModal v-model="recipeModal.isOpen" fullscreen>
+				<UCard
+					:ui="{
+						base: 'h-full flex flex-col',
+						rounded: '',
+						divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+						body: {
+							base: 'grow overflow-y-auto',
+						},
+					}"
+				>
+					<template #header>
+						<div class="flex items-center justify-between">
+							<h3 class="font-semibold text-gray-900">Рецепт</h3>
+							<UButton
+								color="gray"
+								variant="ghost"
+								icon="i-mdi-close"
+								class="-my-1"
+								@click="recipeModal.isOpen = false"
+							/>
+						</div>
+					</template>
 
-				<AppLoading v-if="recipeModal.loading" />
-				<CardRecipe v-else-if="recipeModal.item" v-bind="recipeModal.item" />
-			</UCard>
-		</UModal>
+					<AppLoading v-if="recipeModal.loading" />
+					<CardRecipe v-else-if="recipeModal.item" v-bind="recipeModal.item" />
+				</UCard>
+			</UModal>
 
-		<UModal v-model="isOpen" fullscreen>
-			<UCard
-				:ui="{
-					base: 'h-full flex flex-col',
-					rounded: '',
-					divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-					body: {
-						base: 'grow',
-					},
-				}"
-			>
-				<template #header>
-					<div class="flex items-center justify-between">
-						<h3 class="font-semibold text-gray-900">Конфигуратор</h3>
-						<UButton
-							color="gray"
-							variant="ghost"
-							icon="i-heroicons-x-mark-20-solid"
-							class="-my-1"
-							@click="isOpen = false"
-						/>
-					</div>
-				</template>
+			<UModal v-model="isOpen" fullscreen>
+				<UCard
+					:ui="{
+						base: 'h-full flex flex-col',
+						rounded: '',
+						divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+						body: {
+							base: 'grow',
+						},
+					}"
+				>
+					<template #header>
+						<div class="flex items-center justify-between">
+							<h3 class="font-semibold text-gray-900">Конфигуратор</h3>
+							<UButton
+								color="gray"
+								variant="ghost"
+								icon="i-heroicons-x-mark-20-solid"
+								class="-my-1"
+								@click="isOpen = false"
+							/>
+						</div>
+					</template>
 
-				<FormDishParams @submit="applyDishParams" />
-			</UCard>
-		</UModal>
+					<FormDishParams @submit="applyDishParams" />
+				</UCard>
+			</UModal>
+		</UContainer>
 	</div>
 </template>

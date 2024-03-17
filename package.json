@@ -15,8 +15,10 @@
 	"dependencies": {
 		"@iconify-json/mdi": "^1.1.64",
 		"@nuxt/ui": "^2.13.0",
+		"formidable": "^3.5.1",
 		"lodash": "^4.17.21",
 		"nuxt": "^3.10.1",
+		"object-to-formdata": "^4.5.1",
 		"openai": "^4.28.0",
 		"vue": "^3.4.15",
 		"vue-router": "^4.2.5",

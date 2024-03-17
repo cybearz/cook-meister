@@ -1,118 +1,68 @@
 <script setup lang="ts">
-import type Recipe from "@/types/Recipe"
-
 const route = useRoute()
-const { id } = route.params
-const { data: recipe, pending, refresh } = useFetch(`/api/recipes/${id}`)
-recipe as Recipe
+const user = useSupabaseUser()
 
-const updateMode = ref(false)
+const { recipe, pending, getRecipe } = useRecipe()
+const {
+	data: updateData,
+	error,
+	pending: updatePending,
+	updateRecipe,
+} = useUpdateRecipe()
+const {
+	data: deleteData,
+	pending: deletePending,
+	deleteRecipe,
+} = useRecipeDelete()
+const editMode = ref(false)
+const canEdit = computed(() => user.value?.id === recipe.value?.author)
 
-const client = useSupabaseClient()
-
-const uploadPhoto = async (photo: File) => {
-	const { data, error } = await client.storage
-		.from("dish-images")
-		.upload(photo.name, photo)
-
-	if (error) {
-		throw error
+watch(updateData, async (v) => {
+	if (v) {
+		editMode.value = false
+		await getRecipe(route.params.id)
 	}
+})
 
-	return data.path
-}
-
-const downloadPhoto = async (path: string) => {
-	const { data } = await client.storage.from("dish-images").getPublicUrl(path)
-
-	return data.publicUrl
-}
-
-const updatePending = ref(false)
-
-const updateRecipe = async (recipe: Recipe, photo: File) => {
-	updatePending.value = true
-
-	try {
-		let photoUrl = recipe.photoUrl
-		if (photo) {
-			const path = await uploadPhoto(photo)
-			photoUrl = await downloadPhoto(path)
-		} else if (!photoUrl) {
-			photoUrl = await downloadPhoto("no-image.svg")
-		}
-
-		await $fetch(`/api/recipes/${id}`, {
-			method: "PUT",
-			body: { ...recipe, photoUrl },
-		})
-
-		await refresh()
-		updateMode.value = false
-	} finally {
-		updatePending.value = false
+watch(deleteData, (v) => {
+	if (v) {
+		navigateTo("/recipes")
 	}
-}
+})
 
-const deletePending = ref(false)
-
-const deleteRecipe = async (recipe: Recipe, photo: File) => {
-	deletePending.value = true
-
-	try {
-		await $fetch(`/api/recipes/${id}`, {
-			method: "DELETE",
-		})
-		goToRecipes()
-	} finally {
-		deletePending.value = false
-	}
-}
-
-const goToRecipes = () => navigateTo("/recipes")
+onBeforeMount(async () => {
+	await getRecipe(route.params.id)
+})
 </script>
 
 <template>
-	<AppLoading v-if="pending" />
-	<div v-else>
-		<div v-if="updateMode">
-			<div class="mb-4">
+	<div>
+		<AppBar title="Рецепт" hide-menu>
+			<template #action>
 				<UButton
-					label="Назад"
-					variant="ghost"
-					size="xs"
-					icon="i-mdi-arrow-left"
-					color="gray"
-					@click="updateMode = false"
-				/>
-			</div>
-			<FormRecipe
-				v-model="recipe"
-				:loading="updatePending || deletePending"
-				@submit="updateRecipe"
-				@delete="deleteRecipe"
-			/>
-		</div>
-		<div v-else>
-			<div class="flex justify-between mb-4">
-				<UButton
-					label="Все рецепты"
-					variant="ghost"
-					size="xs"
-					icon="i-mdi-arrow-left"
-					color="gray"
-					@click="goToRecipes"
-				/>
-				<UButton
+					v-if="!pending && canEdit"
 					label="Изменить"
-					variant="ghost"
-					size="xs"
 					icon="i-mdi-pencil"
-					color="gray"
-					@click="updateMode = true"
+					variant="ghost"
+					@click="editMode = true"
 				/>
+			</template>
+		</AppBar>
+		<UContainer class="py-2">
+			<AppLoading v-if="pending" />
+			<div v-else>
+				<div v-if="editMode">
+					<FormRecipe
+						v-model="recipe"
+						:loading="updatePending || deletePending"
+						@submit="
+							(recipe, photo) => updateRecipe(route.params.id, recipe, photo)
+						"
+						@delete="deleteRecipe(route.params.id)"
+					/>
+				</div>
+				<CardRecipe v-else-if="!!recipe" v-bind="recipe" />
 			</div>
-			<CardRecipe v-bind="recipe" />
-		</div>
+		</UContainer>
 	</div>
 </template>

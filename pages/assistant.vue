@@ -37,28 +37,41 @@ const sendMsg = async () => {
 </script>
 
 <template>
-	<div class="flex flex-col h-full">
-		<ChatMessages :messages="messages" />
-		<UInput
-			v-model="userRequest"
-			autofocus
-			placeholder="Введите сообщение..."
-			size="lg"
-			:ui="{
-				icon: { trailing: { pointer: '' }, leading: { pointer: '' } },
-			}"
-			class="w-full mt-4"
-			@keyup.enter="userRequest && sendMsg()"
-		>
-			<template #trailing>
+	<div class="h-full flex flex-col">
+		<AppBar title="Ассистент">
+			<template #action>
 				<UButton
-					variant="link"
-					icon="i-mdi-send"
-					:padded="false"
-					:disabled="!userRequest"
-					@click="sendMsg"
+					icon="i-mdi-refresh"
+					variant="ghost"
+					square
+					:ui="{ rounded: 'rounded-full' }"
 				/>
 			</template>
-		</UInput>
+		</AppBar>
+
+		<UContainer class="py-2 flex-1 flex flex-col">
+			<ChatMessages :messages="messages" />
+			<UInput
+				v-model="userRequest"
+				autofocus
+				placeholder="Введите сообщение..."
+				size="lg"
+				:ui="{
+					icon: { trailing: { pointer: '' }, leading: { pointer: '' } },
+				}"
+				class="w-full mt-4"
+				@keyup.enter="userRequest && sendMsg()"
+			>
+				<template #trailing>
+					<UButton
+						variant="link"
+						icon="i-mdi-send"
+						:padded="false"
+						:disabled="!userRequest"
+						@click="sendMsg"
+					/>
+				</template>
+			</UInput>
+		</UContainer>
 	</div>
 </template>
