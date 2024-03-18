@@ -5,6 +5,10 @@ const props = defineProps<{
 	title: string
 }>()
 
+const title = toRef(() => props.title)
+useHead({
+	title,
+})
 const { isOpen } = useSidebar()
 </script>
 <template>

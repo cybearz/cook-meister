@@ -12,8 +12,12 @@ export default () => {
 			recipe.value = await $fetch(`/api/recipes/${id}`, {
 				method: "GET",
 			})
+
+			if (!recipe.value) {
+				error.value = "Рецепт не найден"
+			}
 		} catch (e) {
-			error.value = "Something went wrong..."
+			error.value = "Что-то пошло не так..."
 		} finally {
 			pending.value = false
 		}

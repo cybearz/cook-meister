@@ -49,7 +49,7 @@ const sendMsg = async () => {
 			</template>
 		</AppBar>
 
-		<UContainer class="py-2 flex-1 flex flex-col">
+		<UContainer class="py-2 flex-1 flex flex-col w-full">
 			<ChatMessages :messages="messages" />
 			<UInput
 				v-model="userRequest"

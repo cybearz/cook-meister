@@ -2,10 +2,19 @@
 const route = useRoute()
 const user = useSupabaseUser()
 
-const { recipe, pending, getRecipe } = useRecipe()
+const { recipe, error, pending, getRecipe } = useRecipe()
+watch(error, (v) => {
+	if (v)
+		throw createError({
+			statusCode: 404,
+			message: v,
+			fatal: true,
+		})
+})
+
 const {
 	data: updateData,
-	error,
+	error: updateError,
 	pending: updatePending,
 	updateRecipe,
 } = useUpdateRecipe()
