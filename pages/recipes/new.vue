@@ -6,12 +6,16 @@ watch(data, (v) => {
 		navigateTo("/recipes")
 	}
 })
+
+onMounted(() => {
+	console.log("New mounted")
+})
 </script>
 
 <template>
-	<div>
+	<div class="flex flex-col h-full w-full">
 		<AppBar title="Новый рецепт" />
-		<UContainer class="py-2">
+		<UContainer class="py-2 w-full flex-1 overflow-y-auto">
 			<FormRecipe :loading="pending" @submit="createRecipe" />
 		</UContainer>
 	</div>

@@ -37,7 +37,7 @@ const sendMsg = async () => {
 </script>
 
 <template>
-	<div class="h-full flex flex-col">
+	<div class="h-full flex flex-col w-full">
 		<AppBar title="Ассистент">
 			<template #action>
 				<UButton

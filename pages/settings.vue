@@ -15,11 +15,7 @@ const updateUserCredentials = (userCredentials: UserCredentials) => {
 
 <template>
 	<div>
-		<AppBar title="Настройки">
-			<template #action>
-				<UButton icon="i-mdi-logout" color="amber" variant="ghost" />
-			</template>
-		</AppBar>
+		<AppBar title="Настройки" />
 		<UContainer class="py-2">
 			<FormSettings
 				v-model="userCredentials"
