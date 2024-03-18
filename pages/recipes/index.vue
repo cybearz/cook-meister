@@ -2,11 +2,7 @@
 import _ from "lodash"
 
 const user = useSupabaseUser()
-const { recipes, error, pending, getRecipes } = useRecipes()
-
-onBeforeMount(async () => {
-	await getRecipes()
-})
+const { recipes, error, pending } = useRecipes()
 
 watch(error, () => {
 	console.error(error.value)

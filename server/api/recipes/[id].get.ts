@@ -9,5 +9,11 @@ export default defineEventHandler(async (event) => {
 			id,
 		},
 	})
+	if (!recipe) {
+		throw createError({
+			statusCode: 404,
+			statusMessage: "Рецепт не найден",
+		})
+	}
 	return recipe
 })

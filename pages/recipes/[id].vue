@@ -1,13 +1,14 @@
 <script setup lang="ts">
 const route = useRoute()
+const id = route.params.id as string
 const user = useSupabaseUser()
 
-const { recipe, error, pending, getRecipe } = useRecipe()
+const { recipe, error, pending, refresh } = useRecipe(id)
 watch(error, (v) => {
 	if (v)
 		throw createError({
 			statusCode: 404,
-			message: v,
+			message: "Рецепт не найден",
 			fatal: true,
 		})
 })
@@ -29,7 +30,7 @@ const canEdit = computed(() => user.value?.id === recipe.value?.author)
 watch(updateData, async (v) => {
 	if (v) {
 		editMode.value = false
-		await getRecipe(route.params.id)
+		refresh()
 	}
 })
 
@@ -37,10 +38,6 @@ watch(deleteData, (v) => {
 	if (v) {
 		navigateTo("/recipes")
 	}
-})
-
-onBeforeMount(async () => {
-	await getRecipe(route.params.id)
 })
 </script>
 
