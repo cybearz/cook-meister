@@ -4,7 +4,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "nuxt build",
-		"dev": "nuxt dev",
+		"dev": "nuxt dev --host",
 		"generate": "nuxt generate",
 		"preview": "nuxt preview",
 		"postinstall": "nuxt prepare"
@@ -20,8 +20,10 @@
 		"nuxt": "^3.10.1",
 		"object-to-formdata": "^4.5.1",
 		"openai": "^4.28.0",
+		"uuid": "^9.0.1",
 		"vue": "^3.4.15",
 		"vue-router": "^4.2.5",
+		"vuedraggable": "^4.1.0",
 		"zod": "^3.22.4"
 	},
 	"devDependencies": {

@@ -42,7 +42,7 @@ watch(deleteData, (v) => {
 </script>
 
 <template>
-	<div>
+	<div class="flex flex-col h-full w-full">
 		<AppBar title="Рецепт" hide-menu>
 			<template #action>
 				<UButton
@@ -54,7 +54,7 @@ watch(deleteData, (v) => {
 				/>
 			</template>
 		</AppBar>
-		<UContainer class="py-2">
+		<UContainer class="py-2 w-full flex-1 overflow-y-auto">
 			<AppLoading v-if="pending" />
 			<div v-else>
 				<div v-if="editMode">

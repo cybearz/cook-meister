@@ -8,16 +8,30 @@ datasource db {
 }
 
 model Recipe {
-  id           Int      @id @default(autoincrement())
+  id           Int                @id @default(autoincrement())
   photoUrl     String
-  name         String
+  name         String             @unique
   description  String?
   cookingTime  Int
   difficulty   String
   kilocalories Int?
-  ingredients  Json[]
   steps        String[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  author       String   @db.Uuid
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  author       String             @db.Uuid
+  ingredients  RecipeIngredient[]
+}
+
+model Ingredient {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+}
+
+model RecipeIngredient {
+  id          Int    @id @default(autoincrement())
+  name        String
+  amount      Int
+  measureUnit String
+  recipeId    Int
+  recipe      Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 }

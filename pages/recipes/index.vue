@@ -41,7 +41,7 @@ const filteredList = computed(() =>
 			<AppLoading v-if="pending" />
 			<div v-else>
 				<UTabs :items="filter.items" @change="filter.onChange" />
-				<div class="grid grid-cols-2 gap-2">
+				<div class="grid grid-cols-2 md:grid-cols-3 gap-2">
 					<ULink
 						v-for="recipe in filteredList"
 						:key="recipe.id"
@@ -52,7 +52,7 @@ const filteredList = computed(() =>
 							class="h-full border p-4 rounded-lg cursor-pointer hover:bg-gray-100"
 						>
 							<div
-								class="h-32 bg-center bg-cover bg-no-repeat"
+								class="h-32 md:h-48 bg-center bg-cover bg-no-repeat"
 								:style="{ backgroundImage: `url(${recipe.photoUrl})` }"
 								alt=""
 							/>

@@ -1,0 +1,50 @@
+### Get all recipes
+GET http://localhost:3000/api/recipes
+content-type: application/json
+
+### Get the recipe by id
+GET http://localhost:3000/api/recipes/1
+content-type: application/json
+
+### Create recipe
+POST  http://localhost:3000/api/recipes
+content-type: application/json
+
+{
+	"name": "Sample 5",
+	"description": "asdasdasdadads",
+	"cookingTime": 15,
+	"difficulty": "Легко",
+	"kilocalories": 220,
+	"ingredients": [
+		{ "name": "Ing1", "amount": 1, "measureUnit": "г" },
+		{ "name": "Ing2", "amount": 1, "measureUnit": "г" },
+		{ "name": "Ing3", "amount": 1, "measureUnit": "г" }
+	],
+	"steps": ["Вскипятить воду", "Приготовить суп"],
+	"author": "180c1148-5302-4367-92d8-d8237a4bcd70",
+	"photoUrl":
+		"https://qsyfeplduspmspmrltyh.supabase.co/storage/v1/object/public/dish-images/no-image.svg"
+}
+
+### Update recipe
+PUT  http://localhost:3000/api/recipes/4
+content-type: application/json
+
+{
+	"name": "Sample 5 (new)",
+	"description": "asdasdasdadads",
+	"cookingTime": 15,
+	"difficulty": "Легко",
+	"kilocalories": 220,
+	"ingredients": [
+		{ "name": "NewIng1", "amount": 1, "measureUnit": "г" },
+		{ "name": "NewIng2", "amount": 2, "measureUnit": "г" },
+		{ "name": "NewIng3", "amount": 3, "measureUnit": "г" }
+	],
+	"steps": ["Вскипятить воду", "Приготовить суп"],
+	"author": "180c1148-5302-4367-92d8-d8237a4bcd70",
+	"photoUrl":
+		"https://qsyfeplduspmspmrltyh.supabase.co/storage/v1/object/public/dish-images/no-image.svg"
+}
+

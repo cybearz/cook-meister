@@ -1,4 +1,12 @@
-export type MeasureUnit = "г" | "шт" | "кг" | "мл" | "л" | "ч.л" | "ст.л"
+export type MeasureUnit =
+	| "г"
+	| "шт"
+	| "кг"
+	| "мл"
+	| "л"
+	| "ч.л"
+	| "ст.л"
+	| "щепотка"
 
 export interface Ingredient {
 	name: string

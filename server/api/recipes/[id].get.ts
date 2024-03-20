@@ -4,16 +4,26 @@ const prisma = new PrismaClient()
 
 export default defineEventHandler(async (event) => {
 	const id = Number(getRouterParam(event, "id"))
-	const recipe = await prisma.recipe.findUnique({
-		where: {
-			id,
-		},
-	})
-	if (!recipe) {
+	try {
+		const recipe = await prisma.recipe.findUniqueOrThrow({
+			where: {
+				id,
+			},
+			include: {
+				ingredients: {
+					select: {
+						name: true,
+						amount: true,
+						measureUnit: true,
+					},
+				},
+			},
+		})
+		return recipe
+	} catch (e) {
 		throw createError({
 			statusCode: 404,
 			statusMessage: "Рецепт не найден",
 		})
 	}
-	return recipe
 })

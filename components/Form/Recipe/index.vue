@@ -116,11 +116,11 @@ async function onSubmit(event: FormSubmitEvent<Recipe>) {
 			</UFormGroup>
 		</div>
 		<UFormGroup name="ingredients">
-			<FormIngredients v-model="state.ingredients as Ingredient[]" />
+			<FormRecipeIngredients v-model="state.ingredients as Ingredient[]" />
 		</UFormGroup>
 
 		<UFormGroup name="steps">
-			<FormCookingSteps v-model="state.steps as string[]" />
+			<FormRecipeSteps v-model="state.steps as string[]" />
 		</UFormGroup>
 		<div class="flex gap-2">
 			<UButton

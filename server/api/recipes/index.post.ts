@@ -1,21 +1,40 @@
 import { PrismaClient } from "@prisma/client"
-import { serverSupabaseUser } from "#supabase/server"
 const prisma = new PrismaClient()
 
 export default defineEventHandler(async (event) => {
 	const user = event.context.user
-	const recipe = await readBody(event)
+	let {
+		name,
+		description,
+		cookingTime,
+		difficulty,
+		kilocalories,
+		ingredients,
+		steps,
+		photoUrl,
+	} = await readBody(event)
 
-	if (!recipe.photoUrl) {
-		recipe.photoUrl =
+	if (!photoUrl) {
+		photoUrl =
 			"https://qsyfeplduspmspmrltyh.supabase.co/storage/v1/object/public/dish-images/no-image.svg"
 	}
 
-	await prisma.recipe.create({
+	const resp = await prisma.recipe.create({
 		data: {
-			...recipe,
+			name,
+			description,
+			cookingTime,
+			difficulty,
+			kilocalories,
+			ingredients: {
+				createMany: {
+					data: ingredients,
+				},
+			},
+			steps,
+			photoUrl,
 			author: user?.id,
 		},
 	})
-	return true
+	return resp
 })

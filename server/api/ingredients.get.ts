@@ -1,12 +1,20 @@
-import ingredients from "@/server/ingredients.json"
+import { PrismaClient } from "@prisma/client"
 
-export default defineEventHandler((event) => {
+const prisma = new PrismaClient()
+
+export default defineEventHandler(async (event) => {
 	const { search } = getQuery(event)
-	if (search === "") return ingredients.slice(0, 15)
 
-	const foundIngredients = ingredients.filter((item) =>
-		item.toLowerCase().includes(search?.toLowerCase())
-	)
+	const recipeList = await prisma.ingredient.findMany({
+		where: {
+			name: {
+				contains: String(search),
+			},
+		},
+		select: {
+			name: true,
+		},
+	})
 
-	return foundIngredients
+	return recipeList
 })
